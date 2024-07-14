@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ClassroomRepository } from './classroom.repository';
 import { ClassroomService } from './classroom.service';
@@ -10,9 +10,10 @@ import { OrmModule } from 'src/configs/typeorm/typeorm.module';
   imports: [
     OrmModule,
     JwtModule.register({ secret: process.env.ACCESS_SECRET_KEY }),
-    UserModule,
+    forwardRef(()=> UserModule,)
   ],
   providers: [ClassroomRepository, ClassroomService],
   controllers: [ClassroomController],
+  exports: [ClassroomRepository],
 })
 export class ClassroomModule {}

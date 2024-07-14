@@ -19,6 +19,8 @@ import { UserDto } from 'src/dtos/user/user.dto';
 import { JwtAuthGuard } from 'src/share/guards/auth.guard';
 import { RoleGuard } from 'src/share/guards/role.guard';
 import { ManagerGuard } from 'src/share/guards/manager.guard';
+import { TeacherGuard } from 'src/share/guards/teacher.guard';
+import { StudentGuard } from 'src/share/guards/student.guard';
 
 @Controller('/user')
 export class UserController {
@@ -31,19 +33,12 @@ export class UserController {
     return await this.userService.getAllUsersService();
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard)
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(RoleGuard)
   @Get('/:id')
   @HttpCode(200)
   async getUserByIdController(@Param('id') id: string): Promise<IUserResponse> {
-    try {
-      return this.userService.getUserByIdService(id);
-    } catch (error) {
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return await this.userService.getUserByIdService(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -96,7 +91,42 @@ export class UserController {
   @UseGuards(ManagerGuard)
   @Delete('/:id')
   @HttpCode(200)
-  async deleteUserController(@Param('id') id: string): Promise<boolean> {
+  async deleteUserController(@Param('id') id: string): Promise<DeleteResult> {
     return this.userService.deleteUserService(id);
+  }
+
+  async addToQuizController(
+    @Headers('authorization') header: string,
+    @Param('quiz_id') quiz_id: string,
+  ) {}
+
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(TeacherGuard)
+  @Get('/teacher/classroom')
+  @HttpCode(200)
+  async getAllClassesByTeacherController(
+    @Headers('authorization') header: string,
+  ) {
+    const tokenSplit = header.split(' ')[1];
+    if (!tokenSplit) {
+      throw new UnauthorizedException('Missing token');
+    } else {
+      return await this.userService.getAllClassesByTeacherService(tokenSplit);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(StudentGuard)
+  @Get('/student/classroom')
+  @HttpCode(200)
+  async getAllClassesByStudentController(
+    @Headers('authorization') header: string,
+  ) {
+    const tokenSplit = header.split(' ')[1];
+    if (!tokenSplit) {
+      throw new UnauthorizedException('Missing token');
+    } else {
+      return await this.userService.getAllClassesByStudentService(tokenSplit);
+    }
   }
 }

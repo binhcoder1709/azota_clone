@@ -7,7 +7,4 @@ export class CreateAnswerDto {
 
   @IsBoolean()
   is_correct: boolean;
-
-  @IsString()
-  question: Question;
 }

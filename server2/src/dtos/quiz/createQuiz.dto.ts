@@ -9,4 +9,7 @@ export class CreateQuizDto {
 
   @IsDateString()
   end_time: string;
+
+  @IsString()
+  classroom: string;
 }

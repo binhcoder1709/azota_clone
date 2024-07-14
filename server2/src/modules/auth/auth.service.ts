@@ -17,6 +17,7 @@ interface PayloadToken {
   user_name: string;
   email: string;
   avatar: string;
+  role:number
 }
 
 @Injectable()
@@ -55,6 +56,7 @@ export class AuthService {
         user_name: userWithEmail.user_name,
         email: userWithEmail.email,
         avatar: userWithEmail.avatar,
+        role:userWithEmail.role
       };
       const accessToken = this.jwtService.sign(dataPayload);
       const refreshToken = this.jwtService.sign(dataPayload, {
@@ -64,10 +66,11 @@ export class AuthService {
       return {
         AT: accessToken,
         RT: refreshToken,
+        role: userWithEmail.role
       };
     } catch (error) {
       console.log(error);
-      
+
       throw new InternalServerErrorException('Internal server error');
     }
   }
@@ -86,6 +89,7 @@ export class AuthService {
             user_name: decoded.user_name,
             email: decoded.email,
             avatar: decoded.avatar,
+            role:decoded.role
           };
           const accessToken = this.jwtService.sign(newPayloadToken);
           return { AT: accessToken };

@@ -19,8 +19,8 @@ import { JwtAuthGuard } from 'src/share/guards/auth.guard';
 export class ClassroomController {
   constructor(private readonly classroomService: ClassroomService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(TeacherGuard)
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(TeacherGuard)
   @Post('/create')
   @HttpCode(201)
   async createClassroomController(

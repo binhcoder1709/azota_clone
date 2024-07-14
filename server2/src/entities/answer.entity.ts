@@ -20,7 +20,7 @@ export class Answer {
   @Column()
   is_correct: boolean;
 
-  @ManyToOne(() => Question, (question) => question.answers)
+  @ManyToOne(() => Question, (question) => question.answers, {onDelete: 'CASCADE'})
   @JoinColumn({ name: 'question_id' })
   question: Question;
 

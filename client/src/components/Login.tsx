@@ -1,8 +1,12 @@
 import { FC } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { notification } from "antd";
+import baseUrl from "../apis/axios";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/store";
+import { setTokens } from "../redux/useSlice/tokenSlice";
 
 // Định nghĩa giao diện FormValue
 interface FormValue {
@@ -23,17 +27,37 @@ const validationSchema = Yup.object().shape({
 });
 
 const Login: FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const formik = useFormik<FormValue>({
     initialValues: {
       email: "",
       password: "",
     },
     validationSchema,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       const data: ILogin = {
         email: values.email,
         password: values.password,
       };
+
+      try {
+        const response = await baseUrl.post("/auth/login", data);
+        dispatch(
+          setTokens({
+            refreshToken: response.data.RT,
+            accessToken: response.data.AT,
+          })
+        );
+        notification.success({ message: "Đăng nhập thành công" });
+        if (response.data.role === 2) {
+          setTimeout(() => {
+            navigate("/teacher");
+          }, 2000);
+        }
+      } catch (error) {
+        notification.error({ message: "Đăng nhập thất bại" });
+      }
     },
   });
 

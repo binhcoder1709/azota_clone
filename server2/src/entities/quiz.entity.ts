@@ -9,6 +9,7 @@ import {
 import { User } from './user.entity';
 import { StudentQuiz } from './student_quiz.entity';
 import { Question } from './question.entity';
+import { Classroom } from './classroom.entity';
 
 @Entity('quizzes')
 export class Quiz {
@@ -28,9 +29,15 @@ export class Quiz {
   @JoinColumn({ name: 'teacher_id' })
   teacher: User;
 
-  @OneToMany(() => StudentQuiz, (studentQuiz) => studentQuiz.quiz)
+  @OneToMany(() => StudentQuiz, (studentQuiz) => studentQuiz.quiz, {
+    cascade: true,
+  })
   student_quizzes: StudentQuiz[];
 
-  @OneToMany(() => Question, (question) => question.quiz)
+  @OneToMany(() => Question, (question) => question.quiz, { cascade: true })
   questions: Question[];
+
+  @ManyToOne(() => Classroom, (clr) => clr.quizzes, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'classroom_id' })
+  classroom: Classroom;
 }

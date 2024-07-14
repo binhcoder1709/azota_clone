@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { StudentClassroom } from './student_classroom.entity';
+import { Quiz } from './quiz.entity';
 
 @Entity('classrooms')
 export class Classroom {
@@ -31,6 +32,9 @@ export class Classroom {
     { cascade: true },
   )
   student_classrooms: StudentClassroom[];
+
+  @OneToMany(() => Quiz, (quiz) => quiz.classroom, { cascade: true })
+  quizzes: Quiz[];
 
   @BeforeInsert()
   generateClassroomCode() {

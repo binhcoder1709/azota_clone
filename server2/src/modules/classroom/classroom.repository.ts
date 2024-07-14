@@ -58,6 +58,10 @@ export class ClassroomRepository {
     }
   }
 
+  async findById(classroom_id: string): Promise<Classroom> {
+    return await this.classroomRepos.findOneBy({ classroom_id: classroom_id });
+  }
+
   async findStudentsById(classroom_id: string) {
     const classroom = await this.classroomRepos.findOneBy({
       classroom_id: classroom_id,
